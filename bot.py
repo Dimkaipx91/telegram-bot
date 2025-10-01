@@ -271,10 +271,13 @@ async def handle_start_course(update: Update, context: ContextTypes.DEFAULT_TYPE
     user_id = str(update.effective_user.id)
     username = update.effective_user.username or "unknown"
 
+    logger.info(f"Обработка кнопки 'Начать курс' для пользователя {user_id}")
+
     # Получаем пользователя из Google Sheets
     user_data = get_user_from_sheet(user_id)
 
     if not user_data:
+        logger.warning(f"Пользователь {user_id} не найден в Google Sheets")
         await update.message.reply_text("Пожалуйста, начни с команды /start")
         return
 
