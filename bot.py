@@ -236,17 +236,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
     username = update.effective_user.username or "unknown"
 
-    # Создаем или обновляем пользователя в Google Sheets
-    user_data = {
-        "user_id": user_id,
-        "username": username,
-        "current_lesson": 0,
-        "paused": False,
-        "last_lesson_sent": None,
-        "completed": False,
-        "created_at": datetime.now().isoformat(),
-    }
-    save_user_to_sheet(user_data)
+    try:
+        # Создаем или обновляем пользователя в Google Sheets
+        user_data = {
+            "user_id": user_id,
+            "username": username,
+            "current_lesson": 0,
+            "paused": False,
+            "last_lesson_sent": None,
+            "completed": False,
+            "created_at": datetime.now().isoformat(),
+        }
+        save_user_to_sheet(user_data)
+        logger.info(f"Пользователь {user_id} сохранён в Google Sheets")
+    except Exception as e:
+        logger.error(f"Ошибка при сохранении пользователя {user_id}: {e}")
 
     keyboard = [[KeyboardButton("Начать курс")]]
     reply_markup = ReplyKeyboardMarkup(
