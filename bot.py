@@ -248,9 +248,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "created_at": datetime.now().isoformat(),
         }
         save_user_to_sheet(user_data)
-        logger.info(f"Пользователь {user_id} сохранён в Google Sheets")
+        logger.info(f"✅ Пользователь {user_id} успешно сохранён в Google Sheets")
     except Exception as e:
-        logger.error(f"Ошибка при сохранении пользователя {user_id}: {e}")
+        logger.error(f"❌ Ошибка при сохранении пользователя {user_id}: {e}")
 
     keyboard = [[KeyboardButton("Начать курс")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -277,7 +277,7 @@ async def handle_start_course(update: Update, context: ContextTypes.DEFAULT_TYPE
     user_data = get_user_from_sheet(user_id)
 
     if not user_data:
-        logger.warning(f"Пользователь {user_id} не найден в Google Sheets")
+        logger.warning(f"❌ Пользователь {user_id} не найден в Google Sheets")
         await update.message.reply_text("Пожалуйста, начни с команды /start")
         return
 
