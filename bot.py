@@ -58,8 +58,8 @@ async def init_google_sheets():
     global gc, users_sheet, responses_sheet
     try:
         scope = [
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive",
+            "https://spreadsheets.google.com/feeds",  # ✅ Убраны пробелы
+            "https://www.googleapis.com/auth/drive",  # ✅ Убраны пробелы
         ]
         creds = ServiceAccountCredentials.from_json_keyfile_name(
             GOOGLE_CREDENTIALS_FILE, scope
