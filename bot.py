@@ -120,16 +120,23 @@ async def init_google_sheets():
 def get_user_from_sheet(user_id: str) -> Optional[Dict[str, Any]]:
     """Получить пользователя из Google Sheets"""
     if not users_sheet:
+        logger.error("❌ users_sheet не инициализирован!")
         return None
 
     try:
         all_values = users_sheet.get_all_values()
+        logger.info(f"✅ Получено {len(all_values)} строк из таблицы")
+
         if len(all_values) <= 1:  # Только заголовки
+            logger.warning("⚠️ Таблица пуста (только заголовки)")
             return None
 
         headers = all_values[0]
-        for row in all_values[1:]:
-            if row and row[0] == user_id:  # user_id в первом столбце
+        logger.info(f"✅ Заголовки: {headers}")
+
+        for i, row in enumerate(all_values[1:], start=2):
+            logger.info(f"Строка {i}: {row}")
+            if row and len(row) > 0 and row[0] == user_id:  # user_id в первом столбце
                 user_data = dict(zip(headers, row))
                 # Конвертируем типы данных
                 user_data["current_lesson"] = int(user_data.get("current_lesson", 0))
@@ -137,10 +144,13 @@ def get_user_from_sheet(user_id: str) -> Optional[Dict[str, Any]]:
                 user_data["completed"] = (
                     user_data.get("completed", "False").lower() == "true"
                 )
+                logger.info(f"✅ Найден пользователь {user_id}: {user_data}")
                 return user_data
+
+        logger.warning(f"❌ Пользователь {user_id} не найден в таблице")
         return None
     except Exception as e:
-        logger.error(f"Ошибка получения пользователя из Google Sheets: {e}")
+        logger.error(f"❌ Ошибка получения пользователя из Google Sheets: {e}")
         return None
 
 
